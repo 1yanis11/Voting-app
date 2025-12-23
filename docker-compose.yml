@@ -27,7 +27,28 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-  
+
+  vote:
+    build: ./voting-app/vote
+    ports:
+      - "8080:8080"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OPTIONS_A: Cats
+      OPTIONS_B: Dogs
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - frontend-network
+      - backend-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 volumes:
   postgres_data:
 
