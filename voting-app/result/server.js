@@ -25,7 +25,7 @@ io.sockets.on("connection", function (socket) {
 const pgUser = process.env.POSTGRES_USER || "postgres"
 const pgPassword = process.env.POSTGRES_PASSWORD || "postgres"
 const pgHost = process.env.POSTGRES_HOST || "localhost"
-const pgDb = process.env.POSTGRES_BD || "progrest"
+const pgDb = process.env.POSTGRES_DB || "postgres"
 
 const pool = new pg.Pool({
   user: pgUser,

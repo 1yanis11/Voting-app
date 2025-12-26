@@ -22,6 +22,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   vote:
     build: ./voting-app/vote
@@ -45,7 +50,7 @@ services:
       redis:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
     environment:
       REDIS_HOST: redis
       POSTGRES_HOST: postgres
@@ -53,6 +58,22 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     networks:
+      - backend-network
+  
+  result:
+    build: ./voting-app/result
+    ports:
+      - "8888:8888"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - frontend-network
       - backend-network
 
 volumes:
